@@ -3,3 +3,5 @@ __pycache__
 output.apk
 output.keystore
 revanced-cache
+.idea/
+options.json

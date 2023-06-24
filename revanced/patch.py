@@ -1,10 +1,11 @@
 import subprocess
+import sys
 
 from functools import cache
 
 import urllib3
 
-from .download import download_apk, download_file
+from .download import download_file
 
 REVANCED_TOOLS_URL = "https://releases.revanced.app/tools"
 
@@ -48,7 +49,13 @@ def create_patched_apk(
     version = get_app_version(app, patches)
 
     # TODO: make apkmirror download work
-    apk_file = download_apk(app, version).name if False else "../../dl/com.google.android.youtube_18.19.35-1537727936_minAPI26(arm64-v8a,armeabi-v7a,x86,x86_64)(nodpi)_apkmirror.com.apk"
+    if len(sys.argv) == 2:
+        apk_file = sys.argv[1]
+    else:
+        sys.exit(
+            f"Download {app} {version} from apkmirror and provide the path as argument\n"
+            f"Visit: https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s={version}+{app}&arch%5B%5D=universal&dpi[]=nodpi"
+        )
 
     subprocess.run(["file", apk_file])  # for debugging
 
