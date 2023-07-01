@@ -5,7 +5,8 @@ from functools import cache
 
 import urllib3
 
-from .download import download_file
+from .apk_download import download_apk
+from .utils import download_file, eprint
 
 REVANCED_TOOLS_URL = "https://releases.revanced.app/tools"
 
@@ -15,6 +16,7 @@ def download_patches() -> list:
 def get_app_version(app: str, patches: list[dict]) -> str:
     versions: set[frozenset[str]] = set()
     for patch in patches:
+        print(patch)
         versions.update(
             frozenset(package["versions"])
             for package in patch["compatiblePackages"]
@@ -25,6 +27,7 @@ def get_app_version(app: str, patches: list[dict]) -> str:
 
 @cache
 def _get_tools() -> list[dict]:
+    eprint("Downloading data from https://releases.revanced.app/tools")
     return urllib3.request("GET", "https://releases.revanced.app/tools").json()["tools"]
 
 def get_tool_url(repo: str, file_extension: str) -> str:
@@ -39,32 +42,29 @@ def get_tool_url(repo: str, file_extension: str) -> str:
 
 def create_patched_apk(
     app: str,
-    selected_patches: dict[str, list[object]],
-) -> None | str:
+    selected_patches: set[str],
+) -> "None | str":
     patches = [
         patch
         for patch in download_patches()
         if patch["name"] in selected_patches
     ]
+    for p in selected_patches:
+        if p not in {_["name"] for _ in patches}:
+            eprint(f"{p} not found")
     version = get_app_version(app, patches)
 
-    # TODO: make apkmirror download work
-    if len(sys.argv) == 2:
-        apk_file = sys.argv[1]
-    else:
-        sys.exit(
-            f"Download {app} {version} from apkmirror and provide the path as argument\n"
-            f"Visit: https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s={version}+{app}&arch%5B%5D=universal&dpi[]=nodpi"
-        )
+    apk_file = download_apk(app, version)
 
-    subprocess.run(["file", apk_file])  # for debugging
+    subprocess.run(["file", apk_file.name])  # for debugging
+    subprocess.run(["apkinfo", apk_file.name])  # for debugging
 
     revanced_cli_jar = download_file(get_tool_url("revanced/revanced-cli", ".jar"), ".jar")
     revanced_patches_jar = download_file(get_tool_url("revanced/revanced-patches", ".jar"), ".jar")
     revanced_integrations_apk = download_file(get_tool_url("revanced/revanced-integrations", ".apk"), ".apk")
     command = [
         "java", "-jar", revanced_cli_jar.name,
-        "-a", apk_file,
+        "-a", apk_file.name,
         "-o", "output.apk",
         "-b", revanced_patches_jar.name,
         "-m", revanced_integrations_apk.name,
@@ -74,4 +74,3 @@ def create_patched_apk(
         command.extend(["-i", patch])
     print(command)
     subprocess.run(command)
-
