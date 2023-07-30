@@ -53,7 +53,7 @@ def create_patched_apk(
         if p not in {_["name"] for _ in patches}:
             eprint(f"{p} not found")
     version = get_app_version(app, patches)
-
+    eprint("Version: ", version)
     apk_file = download_apk(app, version)
 
     subprocess.run(["file", apk_file.name])  # for debugging
