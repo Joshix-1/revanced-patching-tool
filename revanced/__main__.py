@@ -8,6 +8,7 @@ sys.exit(create_patched_apk(
         "Client spoof",
         "Copy video url",
         "Custom branding",
+        "Disable Shorts on startup",
         "Hide Shorts components",
         "External downloads",
         "Hide ads",

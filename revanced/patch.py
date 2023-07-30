@@ -71,6 +71,6 @@ def create_patched_apk(
         "--exclusive",
     ]
     for patch in selected_patches:
-        command.extend(["-i", patch])
+        command.extend(["-i", patch.lower().replace(" ", "-")])
     print(command)
     subprocess.run(command)
