@@ -34,6 +34,9 @@ def get_version_code(app: str, version: str) -> "str | None":
 
 
 def download_apk(app: str, version: str) -> NamedTemporaryFile:
+    class x:
+        name = ... # put path to apk here if download failed
+    #return x()
     code = get_version_code(app, version)
     if not code:
         raise ValueError(f"Could not find {app} {version}")
