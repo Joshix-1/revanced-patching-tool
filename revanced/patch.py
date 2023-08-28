@@ -43,6 +43,7 @@ def get_tool_url(repo: str, file_extension: str) -> str:
 def create_patched_apk(
     app: str,
     selected_patches: set[str],
+    version: str | None = None,
 ) -> "None | str":
     patches = [
         patch
@@ -52,7 +53,7 @@ def create_patched_apk(
     for p in selected_patches:
         if p not in {_["name"] for _ in patches}:
             eprint(f"{p} not found")
-    version = get_app_version(app, patches)
+    version = version or get_app_version(app, patches)
     eprint("Version: ", version)
     apk_file = download_apk(app, version)
 
@@ -64,7 +65,8 @@ def create_patched_apk(
     revanced_integrations_apk = download_file(get_tool_url("revanced/revanced-integrations", ".apk"), ".apk")
     command = [
         "java", "-jar", revanced_cli_jar.name,
-        "-a", apk_file.name,
+        "patch",
+        apk_file.name,
         "-o", "output.apk",
         "-b", revanced_patches_jar.name,
         "-m", revanced_integrations_apk.name,
