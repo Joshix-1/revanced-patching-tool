@@ -5,6 +5,7 @@ from .patch import create_patched_apk
 sys.exit(create_patched_apk(
     "com.google.android.youtube",
     {
+        "Alternative thumbnails",
         "Client spoof",
         "Copy video url",
         "Custom branding",
@@ -17,7 +18,6 @@ sys.exit(create_patched_apk(
         "Hide floating microphone button",
         "Hide player buttons",
         "Hide video action buttons",
-        "Hide watch in VR",
         "Hide watermark",
         "Minimized playback",
         "Navigation buttons",
@@ -32,5 +32,6 @@ sys.exit(create_patched_apk(
         "Vanced MicroG support",
         "Video ads",
         "Playback speed",
+        "Bypass URL redirects",
     },
 ))
