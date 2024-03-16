@@ -61,11 +61,14 @@ def create_patched_apk(
         if patch["name"] in selected_patches
         if patch_supports_app(patch, app)
     ]
-    eprint("Missing patches:", tuple(sorted(
+    eprint("\033[91mMissing patches:", tuple(sorted(
         set(selected_patches) - set(p["name"] for p in patches)
-    )))
+    )), "\033[0m")
     version = version or get_app_version(app, patches)
     eprint("Version: ", version)
+
+    eprint("\n\n")
+
     apk_file = download_apk(app, version)
 
     subprocess.run(["file", apk_file.name])  # for debugging
