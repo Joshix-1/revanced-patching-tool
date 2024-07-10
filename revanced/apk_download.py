@@ -17,7 +17,7 @@ def get_version_code(app: str, version: str) -> "str | None":
         for el in soup.find_all(class_="downloadLink")
         if version.replace(".", "-") in el.get("href")
     }
-    assert len(paths) == 1, f"found {paths} links"
+    assert len(paths) == 1, f"found {paths} links for {app=} {version=}"
     path = paths.pop()
     eprint(path)
 
