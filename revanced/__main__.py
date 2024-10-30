@@ -59,7 +59,7 @@ sys.exit(create_patched_apk(
         "Restore old video quality menu",
         "Return YouTube Dislike",
         "SponsorBlock",
-        "Spoof client",
+        "Spoof video streams",
         "Spoof app version",
         "Swipe controls",
         "Theme",

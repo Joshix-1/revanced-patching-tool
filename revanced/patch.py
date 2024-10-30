@@ -94,4 +94,8 @@ def create_patched_apk(
         command.extend(["-i", patch])
     command.append(apk_file.name)
     print(command)
-    subprocess.run(command)
+    try:
+        subprocess.run(command, check=True)
+    except:
+        input()
+        pass
