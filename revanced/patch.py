@@ -35,7 +35,11 @@ def get_app_version(app: str, patches: list[dict]) -> str:
 @cache
 def _get_tools() -> list[dict]:
     eprint("Downloading data from https://api.revanced.app/tools")
-    return urllib3.request("GET", "https://api.revanced.app/tools").json()["tools"]
+    return sorted(
+        urllib3.request("GET", "https://api.revanced.app/tools").json()["tools"],
+        key=lambda tool: tool["version"],
+        reverse=True,
+    )
 
 def get_tool_url(repo: str, file_extension: str) -> str:
     for tool in _get_tools():
@@ -84,7 +88,7 @@ def create_patched_apk(
         "-o", "output.apk",
         "-b", revanced_patches_jar.name,
         "-m", revanced_integrations_apk.name,
-        "--alias=alias",
+        "--keystore-entry-alias=alias",
         "--keystore-entry-password=ReVanced",
         "--keystore-password=ReVanced",
         "--keystore=output.keystore",
