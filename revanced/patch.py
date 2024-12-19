@@ -11,24 +11,24 @@ from .utils import download_file, eprint
 REVANCED_TOOLS_URL = "https://api.revanced.app/tools"
 
 def download_patches() -> list:
-    return urllib3.request("GET", get_tool_url("revanced/revanced-patches", ".json")).json()
+    return urllib3.request("GET", "https://api.revanced.app/v4/patches/list").json()
 
 
 def patch_supports_app(patch: dict, app: str) -> bool:
     if not patch["compatiblePackages"]:
         eprint("compatiblePackages not present", app, patch)
         return False
-    return app in {package["name"] for package in patch["compatiblePackages"]}
+    return app in {package for package in patch["compatiblePackages"]}
 
 def get_app_version(app: str, patches: list[dict]) -> str:
     versions: set[frozenset[str]] = set()
     for patch in patches:
         print(patch)
         versions.update(
-            frozenset(package["versions"])
-            for package in patch["compatiblePackages"]
-            if package["name"] == app
-            if package["versions"]  # empty means everything is compatible
+            frozenset(versions)
+            for (package, versions) in patch["compatiblePackages"].items()
+            if package == app
+            if versions  # empty means everything is compatible
         )
     return max(frozenset.intersection(*versions))
 
@@ -79,15 +79,14 @@ def create_patched_apk(
     subprocess.run(["apkinfo", apk_file.name])  # for debugging
 
     revanced_cli_jar = download_file(get_tool_url("revanced/revanced-cli", ".jar"), ".jar")
-    revanced_patches_jar = download_file(get_tool_url("revanced/revanced-patches", ".jar"), ".jar")
-    revanced_integrations_apk = download_file(get_tool_url("revanced/revanced-integrations", ".apk"), ".apk")
+    revanced_patches_jar = download_file(get_tool_url("revanced/revanced-patches", ".rvp"), ".rvp")
+    #revanced_integrations_apk = download_file(get_tool_url("revanced/revanced-integrations", ".apk"), ".apk")
     subprocess.run(["java", "-jar", revanced_cli_jar.name, "patch", "--help"])
     command = [
         "java", "-jar", revanced_cli_jar.name,
         "patch",
         "-o", "output.apk",
-        "-b", revanced_patches_jar.name,
-        "-m", revanced_integrations_apk.name,
+        "--patches", revanced_patches_jar.name,
         "--keystore-entry-alias=alias",
         "--keystore-entry-password=ReVanced",
         "--keystore-password=ReVanced",
@@ -95,7 +94,7 @@ def create_patched_apk(
         "--exclusive",
     ]
     for patch in selected_patches:
-        command.extend(["-i", patch])
+        command.extend(["-e", patch])
     command.append(apk_file.name)
     print(command)
     try:

@@ -14,7 +14,7 @@ def get_version_code(app: str, version: str) -> "str | None":
     soup = parse_html(search_response.data)
     paths = {
         el.get("href")
-        for el in soup.find_all(class_="downloadLink")
+        for el in soup.find_all(tag="a")
         if version.replace(".", "-") in el.get("href")
     }
     assert len(paths) == 1, f"found {paths} links for {app=} {version=}"
@@ -35,8 +35,8 @@ def get_version_code(app: str, version: str) -> "str | None":
 
 def download_apk(app: str, version: str) -> NamedTemporaryFile:
     class x:
-        name = ... # put path to apk here if download failed
-    #return x()
+         name = "/home/josh/dl/com.google.android.youtube_19.46.42-1549669824_minAPI26(arm64-v8a,armeabi-v7a,x86,x86_64)(nodpi)_apkmirror.com.apk" # put path to apk here if download failed
+    return x()
     code = get_version_code(app, version)
     if not code:
         raise ValueError(f"Could not find {app} {version}")

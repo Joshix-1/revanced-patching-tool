@@ -5,7 +5,7 @@ from .patch import create_patched_apk
 #sys.exit(create_patched_apk(
 #    "de.dwd.warnapp",
 #    {"Promo code unlock"},
-#    version="4.2.1"
+#    version="5.0.6"
 #))
 # Not selected patches: 
 (
@@ -28,7 +28,7 @@ from .patch import create_patched_apk
   'Remove player controls background', 'Remove tracking query parameter', 'Remove viewer discretion dialog', 'Restore old seekbar thumbnails', 
   'Restore old video quality menu', 'Seekbar tapping', 'Spoof app version', 'Spoof device dimensions', 'Tablet mini player', 'Wide searchbar')
 # Missing patches: ( 'Disable Shorts on startup', 'Hide email address', 'Hide watermark',)
-
+# Spoof client
 
 sys.exit(create_patched_apk(
     "com.google.android.youtube",
