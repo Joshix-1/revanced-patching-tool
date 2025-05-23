@@ -1,2 +1,2 @@
-urllib3=2.2.1
+urllib3==2.2.1
 beautifulsoup4==4.12.2

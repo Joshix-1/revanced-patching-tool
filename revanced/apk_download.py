@@ -34,8 +34,8 @@ def get_version_code(app: str, version: str) -> "str | None":
 
 
 def download_apk(app: str, version: str) -> NamedTemporaryFile:
-    class x:
-         name = "/home/josh/dl/com.google.android.youtube_19.46.42-1549669824_minAPI26(arm64-v8a,armeabi-v7a,x86,x86_64)(nodpi)_apkmirror.com.apk" # put path to apk here if download failed
+    import os.path
+    class x: name = os.path.expanduser("~/dl/com.google.android.youtube_20.12.46-1553610176_minAPI26(arm64-v8a,armeabi-v7a,x86,x86_64)(nodpi)_apkmirror.com.apk") # put path to apk here if download failed
     return x()
     code = get_version_code(app, version)
     if not code:
